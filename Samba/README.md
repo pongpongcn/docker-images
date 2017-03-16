@@ -13,5 +13,5 @@ chmod -R a-rwxst users
 #set 
 chmod u=rwx,g=rxs users
 
-find users -type d -exec chmod u=rwx,g=s {} \;
-find users -type f -exec chmod u=rw {} \;
+find users/* -type d -exec chmod u=rwx,g=s {} \;
+find users/* -type f -exec chmod u=rw {} \;
