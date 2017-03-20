@@ -1,0 +1,40 @@
+version: "3"
+services:
+  samba:
+    image: "pongpongcn/samba"
+    network_mode: "host"
+    volumes:
+     - ./appdata/samba/etc:/etc/samba
+     - ./appdata/samba/extra:/extra
+     - ./userdata/users:/srv/samba/users
+     - ./userdata/public:/srv/samba/public
+    command: -i /extra/smbpasswd
+  mysql:
+    image: "mysql:5.7"
+    volumes:
+     - ./appdata/mysql:/var/lib/mysql
+  owncloud:
+    image: "owncloud:9.1"
+    depends_on:
+     - mysql
+    volumes:
+     - ./appdata/owncloud/apps:/var/www/html/apps
+     - ./appdata/owncloud/config:/var/www/html/config
+     - ./appdata/owncloud/data:/var/www/html/data
+  httpd:
+    image: "httpd:2.4"
+    ports:
+     - "80:80"
+     - "443:443"
+    volumes:
+     - ./userdata/public:/usr/local/apache2/htdocs
+  rygel:
+    image: "sameersbn/rygel:latest"
+    network_mode: "host"
+    volumes:
+     - ./userdata/public/Videos:/videos
+     - ./userdata/public/Music:/music
+     - ./userdata/public/Pictures:/pictures
+
+networks:
+  test1:
