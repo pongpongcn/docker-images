@@ -5,14 +5,15 @@ Samba服务配置
 --------------------
 
 Users文件夹
-    chown -R root:users Users
-    chown -R pocketpc Users/pocketpc
-    chown -R michelle Users/michelle
-    chmod -R a-rwxst Users
-    chmod u=rwx,g=rxs Users
-    find Users/* -type d -exec chmod u=rwx,g=s {} \;
-    find Users/* -type f -exec chmod u=rw {} \;
-
+```
+chown -R root:users Users
+chown -R pocketpc Users/pocketpc
+chown -R michelle Users/michelle
+chmod -R a-rwxst Users
+chmod u=rwx,g=rxs Users
+find Users/* -type d -exec chmod u=rwx,g=s {} \;
+find Users/* -type f -exec chmod u=rw {} \;
+```
 
 -p 139:139 -p 445:445 -p 137:137/udp -p 138:138/udp
 
