@@ -4,7 +4,7 @@ Samba服务配置
 重置Samba服务文件夹权限
 --------------------
 
-Users文件夹
+### Users文件夹
 
 设置基本所有权，属于users组。
 `chown -R root:users Users`
@@ -29,7 +29,26 @@ find Users/shared/* -type d -exec chmod u=rwx,g=rwxs,o=t {} \;
 find Users/shared/* -type f -exec chmod u=rw,g=r {} \;
 ```
 
+### Public文件夹
 
+设置基本所有权，仅属于root。
+`chown -R root:root Public`
+
+清空权限，为后续权限设置确立基准。
+`chmod -R a-rwxst Public`
+
+设置主要权限，开放读权限，非管理员不能写。
+```
+find Public -type d -exec chmod u=rwx,g=rxs,o=rx {} \;
+find Public -type f -exec chmod u=rw,g=r,o=r {} \;
+```
+
+设置Public/Uploads文件夹组和权限。
+```
+chgrp -R users Public/Uploads
+find Public/Uploads -type d -exec chmod u=rwx,g=rwxs,o=rxt {} \;
+find Public/Uploads -type f -exec chmod u=rw,g=r,o=r {} \;
+```
 
 -p 139:139 -p 445:445 -p 137:137/udp -p 138:138/udp
 
