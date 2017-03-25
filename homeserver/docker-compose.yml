@@ -35,6 +35,20 @@ services:
      - ./userdata/public/Videos:/videos
      - ./userdata/public/Music:/music
      - ./userdata/public/Pictures:/pictures
+  transmission:
+    image: "dperson/transmission"
+    networks:
+      default:
+        ipv4_address: 10.43.12.131
+    volumes:
+     - ./userdata/public/Downloads/transmission:/var/lib/transmission-daemon
+#  xware:
+#    image: "zwh8800/xware"
+#    volumes:
+#     - ./appdata/xware/cfg:/xware/cfg
+#     - ./userdata/public/Downloads/xunlei:/data
 
 networks:
-  test1:
+  default:
+    external:
+      name: untrusted
