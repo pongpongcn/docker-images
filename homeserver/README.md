@@ -1,19 +1,35 @@
 Samba服务配置
 ====================
 
-重置Samba文件夹Public权限
+重置Samba服务文件夹权限
 --------------------
 
 Users文件夹
-```
-chown -R root:users Users
+
+设置基本所有权，属于users组。
+'chown -R root:users Users'
+
+清空权限，为后续权限设置确立基准。
+'chmod -R a-rwxst Users'
+
+设置Users文件夹权限，允许users组读取。
+'chmod u=rwx,g=rxs Users'
+
+设置用户私有文件夹权限，以Users/pocketpc文件夹为例。
+'''
 chown -R pocketpc Users/pocketpc
-chown -R michelle Users/michelle
-chmod -R a-rwxst Users
-chmod u=rwx,g=rxs Users
-find Users/* -type d -exec chmod u=rwx,g=s {} \;
-find Users/* -type f -exec chmod u=rw {} \;
-```
+find Users/pocketpc -type d -exec chmod u=rwx,g=s {} \;
+find Users/pocketpc -type f -exec chmod u=rw {} \;
+'''
+
+设置组共享文件夹权限。
+'''
+chmod u=rwx,g=rwxs,o=t Users/shared
+find Users/shared/* -type d -exec chmod u=rwx,g=rwxs,o=t {} \;
+find Users/shared/* -type f -exec chmod u=rw,g=r {} \;
+'''
+
+
 
 -p 139:139 -p 445:445 -p 137:137/udp -p 138:138/udp
 
