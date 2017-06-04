@@ -161,17 +161,19 @@ transmission
    disable spoolss = yes
    socket options = TCP_NODELAY
    
-HP Printer upload firmware when connected
+打印机配置
 ====================
 ```
-sudo yum install cups
-sudo yum install hplip
+sudo yum install cups hplip foomatic
 hp-plugin -i
+#Make sure cupsd running.
 sudo hp-setup -i
 ```
 
-There should be file /usr/lib/udev/rules.d/56-hpmud.rules.  
-Create file /etc/udev/rules.d/57-hp-firmware.rules.
+HP Printer upload firmware when connected
+--------------------
+There should be file /usr/lib/udev/rules.d/56-hpmud.rules  
+Create file /etc/udev/rules.d/57-hp-firmware.rules  
 ```
 ACTION!="add", GOTO="hp_firmware_rules_end"
 
@@ -179,4 +181,23 @@ LABEL="hp_firmware_rules"
 SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="03f0", ATTRS{idProduct}=="4817", RUN+="/usr/bin/hp-firmware -n"
 
 LABEL="hp_firmware_rules_end"
+```
+
+Air Printer
+-------------------
+https://www.ezunix.org/index.php?title=Enable_iOS_AirPrint_with_any_printer_supported_by_CUPS  
+Create new mime files - This is needed for iOS 6 to recognize CUPS print shares!  
+```
+echo "image/urf urf string(0,UNIRAST<00>)" > /usr/share/cups/mime/airprint.types
+echo "image/urf application/pdf 100 pdftoraster" > /usr/share/cups/mime/airprint.convs
+```
+```
+/etc/init.d/avahi-daemon start
+mkdir /opt/airprint 
+cd /opt/airprint
+wget -O airprint-generate.py --no-check-certificate https://raw.github.com/tjfontaine/airprint-generate/master/airprint-generate.py
+chmod +x airprint-generate.py 
+./airprint-generate.py -d /etc/avahi/services
+/etc/init.d/avahi-daemon restart
+ls /etc/avahi/services/
 ```
