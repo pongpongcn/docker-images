@@ -163,20 +163,20 @@ transmission
    
 HP Printer upload firmware when connected
 ====================
-'''
+```
 sudo yum install cups
 sudo yum install hplip
 hp-plugin -i
 sudo hp-setup -i
-'''
+```
 
 There should be file /usr/lib/udev/rules.d/56-hpmud.rules.  
 Create file /etc/udev/rules.d/57-hp-firmware.rules.
-'''
+```
 ACTION!="add", GOTO="hp_firmware_rules_end"
 
 LABEL="hp_firmware_rules"
 SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="03f0", ATTRS{idProduct}=="4817", RUN+="/usr/bin/hp-firmware -n"
 
 LABEL="hp_firmware_rules_end"
-'''
+```
