@@ -183,21 +183,61 @@ SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="03f0", ATTRS{idPr
 LABEL="hp_firmware_rules_end"
 ```
 
+CUPS Discover
+-------------------
+```
+sudo yum install avahi
+```
+
 Air Printer
 -------------------
-https://www.ezunix.org/index.php?title=Enable_iOS_AirPrint_with_any_printer_supported_by_CUPS  
+https://wiki.archlinux.org/index.php/avahi#Airprint_from_Mobile_Devices  
 Create new mime files - This is needed for iOS 6 to recognize CUPS print shares!  
 ```
 echo "image/urf urf string(0,UNIRAST<00>)" > /usr/share/cups/mime/airprint.types
 echo "image/urf application/pdf 100 pdftoraster" > /usr/share/cups/mime/airprint.convs
 ```
+Avahi along with CUPS also provides the capability to print to just about any printer from airprint compatible mobile devices. In order to enable print capability from your device, simply create an Avahi service file for your printer in /etc/avahi/services/. An example of a generic services file for an HP-Laserjet printer would be similar to the following with the name, rp, ty, adminurl and note fields changed.
 ```
-/etc/init.d/avahi-daemon start
-mkdir /opt/airprint 
-cd /opt/airprint
-wget -O airprint-generate.py --no-check-certificate https://raw.github.com/tjfontaine/airprint-generate/master/airprint-generate.py
-chmod +x airprint-generate.py 
-./airprint-generate.py -d /etc/avahi/services
-/etc/init.d/avahi-daemon restart
-ls /etc/avahi/services/
+/etc/avahi/services/airprint.service
+```
+```
+<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+  <name>yourPrnterName</name>
+  <service>
+    <type>_ipp._tcp</type>
+    <subtype>_universal._sub._ipp._tcp</subtype>
+    <port>631</port>
+    <txt-record>txtver=1</txt-record>
+    <txt-record>qtotal=1</txt-record>
+    <txt-record>rp=printers/yourPrnterName</txt-record>
+    <txt-record>ty=yourPrnterName</txt-record>
+    <txt-record>adminurl=http://198.168.7.15:631/printers/yourPrnterName</txt-record>
+    <txt-record>note=Office Laserjet 4100n</txt-record>
+    <txt-record>priority=0</txt-record>
+    <txt-record>product=(GPL Ghostscript)</txt-record>
+    <txt-record>printer-state=3</txt-record>
+    <txt-record>printer-type=0x801046</txt-record>
+    <txt-record>Transparent=T</txt-record>
+    <txt-record>Binary=T</txt-record>
+    <txt-record>Fax=F</txt-record>
+    <txt-record>Color=T</txt-record>
+    <txt-record>Duplex=T</txt-record>
+    <txt-record>Staple=F</txt-record>
+    <txt-record>Copies=T</txt-record>
+    <txt-record>Collate=F</txt-record>
+    <txt-record>Punch=F</txt-record>
+    <txt-record>Bind=F</txt-record>
+    <txt-record>Sort=F</txt-record>
+    <txt-record>Scan=F</txt-record>
+    <txt-record>pdl=application/octet-stream,application/pdf,application/postscript,image/jpeg,image/png,image/urf</txt-record>
+    <txt-record>URF=W8,SRGB24,CP1,RS600</txt-record>
+  </service>
+</service-group>
+```
+Alternatively, https://raw.github.com/tjfontaine/airprint-generate/master/airprint-generate.py can be used to generate Avahi service files. It depends on python2 and python2-pycups. The script can be run using:
+```
+python2 airprint-generate.py -d /etc/avahi/services
 ```
